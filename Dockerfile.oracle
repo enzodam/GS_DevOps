@@ -1,0 +1,19 @@
+# Dockerfile.oracle
+# Base image: Oracle Database Express Edition 21c
+FROM container-registry.oracle.com/database/express:21.3.0-xe
+
+# Environment variable for the database password (required by base image)
+# Password will be set via docker-compose
+ENV ORACLE_PWD=fiap24
+
+# Custom environment variable (example requirement)
+ENV CUSTOM_DB_INFO="SOS_Climatech_DB_Container_Official"
+
+# Expose the default Oracle ports
+EXPOSE 1521 5500
+
+# Define a default working directory (example requirement)
+WORKDIR /opt/oracle/oradata
+
+# Base image entrypoint handles setup using ORACLE_PWD.
+

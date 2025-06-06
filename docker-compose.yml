@@ -1,0 +1,59 @@
+version: '3.8'
+
+services:
+  oracle-db:
+    # Using official Oracle XE 21c image
+    image: container-registry.oracle.com/database/express:21.3.0-xe
+    container_name: sos-oracle-db
+    environment:
+      # Required password for Oracle XE image
+      ORACLE_PWD: fiap24
+      # Custom environment variable requirement
+      CUSTOM_DB_INFO: "SOS_Climatech_DB_Container_Official"
+    ports:
+      - "1521:1521"
+    volumes:
+      # Named volume for Oracle data persistence
+      - oracle_data:/opt/oracle/oradata
+    networks:
+      - sos-network
+    healthcheck:
+        # Waits for the database service to be available
+        test: ["CMD", "sqlplus", "sys/fiap24@//localhost:1521/XE", "as", "sysdba", "<", "/dev/null"]
+        interval: 30s
+        timeout: 10s
+        retries: 10
+        start_period: 180s
+
+  sos-api:
+    build:
+      context: .
+      dockerfile: Dockerfile.app
+    container_name: sos-climatech-api
+    depends_on:
+      oracle-db:
+        condition: service_healthy
+    environment:
+      # Database connection details (using service name XEPDB1)
+      SPRING_DATASOURCE_URL: jdbc:oracle:thin:@oracle-db:1521/XEPDB1
+      SPRING_DATASOURCE_USERNAME: system
+      SPRING_DATASOURCE_PASSWORD: fiap24
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT: org.hibernate.dialect.OracleDialect
+      SERVER_PORT: 8080
+      # Optional: Adjust logging levels as needed
+      LOGGING_LEVEL_ROOT: INFO
+      LOGGING_LEVEL_ORG_SPRINGFRAMEWORK_WEB: INFO
+      LOGGING_LEVEL_ORG_HIBERNATE: INFO
+    ports:
+      - "8080:8080"
+    networks:
+      - sos-network
+
+volumes:
+  oracle_data:
+
+networks:
+  sos-network:
+    driver: bridge
+
