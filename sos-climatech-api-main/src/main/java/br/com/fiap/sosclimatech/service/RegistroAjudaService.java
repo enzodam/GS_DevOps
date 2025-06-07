@@ -52,17 +52,17 @@ public class RegistroAjudaService {
         registro.setRecurso(recurso);
         registro.setQuantidade(dto.getQuantidade());
         registro.setDataRegistro(LocalDateTime.now());
-        registro.setEntregue(false);
+        registro.setEntregue(true);
 
         registro = registroRepository.save(registro);
         return toDTO(registro);
     }
 
     @Transactional
-    public RegistroAjudaDTO marcarComoEntregue(Long id) {
+    public RegistroAjudaDTO marcarComoNaoEntregue(Long id) {
         RegistroAjuda registro = registroRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Registro de ajuda não encontrado com ID: " + id));
-        registro.setEntregue(true);
+        registro.setEntregue(false);
         registro = registroRepository.save(registro);
         return toDTO(registro);
     }
@@ -86,4 +86,3 @@ public class RegistroAjudaService {
         );
     }
 }
-
