@@ -1,4 +1,5 @@
 package br.com.fiap.sosclimatech.controller;
+
 import br.com.fiap.sosclimatech.dto.RegistroAjudaDTO;
 import br.com.fiap.sosclimatech.exception.ApiError;
 import br.com.fiap.sosclimatech.service.RegistroAjudaService;
@@ -13,17 +14,22 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 import java.util.Map;
+
 @RestController
 @RequestMapping("/api/registros-ajuda")
 @Tag(name = "Registros de Ajuda", description = "Endpoints para gerenciamento de registros de ajuda")
 public class RegistroAjudaController {
+
     private final RegistroAjudaService service;
+
     @Autowired
     public RegistroAjudaController(RegistroAjudaService service) {
         this.service = service;
     }
+
     @Operation(summary = "Lista todos os registros de ajuda")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Lista de registros encontrada",
@@ -35,6 +41,7 @@ public class RegistroAjudaController {
         List<RegistroAjudaDTO> registros = service.findAll();
         return ResponseEntity.ok(registros);
     }
+
     @Operation(summary = "Busca um registro de ajuda por ID")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Registro encontrado",
@@ -49,7 +56,8 @@ public class RegistroAjudaController {
         RegistroAjudaDTO registro = service.findById(id);
         return ResponseEntity.ok(registro);
     }
-    @Operation(summary = "Cadastra um novo registro de ajuda")
+
+    @Operation(summary = "Cadastra um novo registro de ajuda (automaticamente marcado como entregue)")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Registro cadastrado com sucesso",
                     content = @Content(mediaType = "application/json",
@@ -66,20 +74,22 @@ public class RegistroAjudaController {
         RegistroAjudaDTO novoRegistro = service.save(dto);
         return new ResponseEntity<>(novoRegistro, HttpStatus.CREATED);
     }
-    @Operation(summary = "Marca um registro de ajuda como entregue")
+
+    @Operation(summary = "Marca um registro de ajuda como NÃO entregue")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Registro marcado como entregue com sucesso",
+            @ApiResponse(responseCode = "200", description = "Registro marcado como NÃO entregue com sucesso",
                     content = @Content(mediaType = "application/json",
                             schema = @Schema(implementation = RegistroAjudaDTO.class))),
             @ApiResponse(responseCode = "404", description = "Registro não encontrado",
                     content = @Content(mediaType = "application/json",
                             schema = @Schema(implementation = ApiError.class)))
     })
-    @PutMapping("/{id}/entregue")
-    public ResponseEntity<RegistroAjudaDTO> marcarComoEntregue(@PathVariable Long id) {
-        RegistroAjudaDTO registroAtualizado = service.marcarComoEntregue(id);
+    @PutMapping("/{id}/nao-entregue")
+    public ResponseEntity<RegistroAjudaDTO> marcarComoNaoEntregue(@PathVariable Long id) {
+        RegistroAjudaDTO registroAtualizado = service.marcarComoNaoEntregue(id);
         return ResponseEntity.ok(registroAtualizado);
     }
+
     @Operation(summary = "Remove um registro de ajuda por ID")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Registro de ajuda removido com sucesso",
@@ -96,4 +106,3 @@ public class RegistroAjudaController {
         return ResponseEntity.ok(response);
     }
 }
-
