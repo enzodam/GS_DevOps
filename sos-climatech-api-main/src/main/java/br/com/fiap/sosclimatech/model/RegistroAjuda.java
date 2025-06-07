@@ -1,85 +1,43 @@
-package br.com.fiap.sosclimatech.service;
-
-import br.com.fiap.sosclimatech.dto.RegistroAjudaDTO;
-import br.com.fiap.sosclimatech.exception.ResourceNotFoundException;
-import br.com.fiap.sosclimatech.model.*;
-import br.com.fiap.sosclimatech.repository.*;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
+package br.com.fiap.sosclimatech.model;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
+import lombok.*;
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.stream.Collectors;
 
-@Service
-public class RegistroAjudaService {
+@Getter @Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@EqualsAndHashCode(of = "id") 
+@Entity
+@Table(name = "TB_REGISTRO_AJUDA")
+public class RegistroAjuda {
 
-    private final RegistroAjudaRepository registroRepository;
-    private final PessoaAfetadaRepository pessoaRepository;
-    private final RecursoRepository recursoRepository;
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SQ_REGISTRO_AJUDA")
+    @SequenceGenerator(name = "SQ_REGISTRO_AJUDA", sequenceName = "SQ_REGISTRO_AJUDA", allocationSize = 1)
+    @Column(name = "ID_REGISTRO")
+    private Long id;
 
-    @Autowired
-    public RegistroAjudaService(RegistroAjudaRepository registroRepository, PessoaAfetadaRepository pessoaRepository, RecursoRepository recursoRepository) {
-        this.registroRepository = registroRepository;
-        this.pessoaRepository = pessoaRepository;
-        this.recursoRepository = recursoRepository;
-    }
+    @NotNull 
+    @ManyToOne(fetch = FetchType.LAZY) 
+    @JoinColumn(name = "ID_PESSOA", nullable = false) 
+    private PessoaAfetada pessoa;
 
-    @Transactional(readOnly = true)
-    public List<RegistroAjudaDTO> findAll() {
-        return registroRepository.findAll().stream()
-                .map(this::toDTO)
-                .collect(Collectors.toList());
-    }
+    @NotNull 
+    @ManyToOne(fetch = FetchType.LAZY) 
+    @JoinColumn(name = "ID_RECURSO", nullable = false) 
+    private Recurso recurso;
 
-    @Transactional(readOnly = true)
-    public RegistroAjudaDTO findById(Long id) {
-        RegistroAjuda registro = registroRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Registro de ajuda não encontrado com ID: " + id));
-        return toDTO(registro);
-    }
+    @NotNull(message = "Quantidade não pode ser nula")
+    @Min(value = 1, message = "Quantidade deve ser pelo menos 1")
+    @Column(name = "NR_QUANTIDADE", nullable = false)
+    private Integer quantidade;
 
-    @Transactional
-    public RegistroAjudaDTO save(RegistroAjudaDTO dto) {
-        PessoaAfetada pessoa = pessoaRepository.findById(dto.getPessoaId())
-                .orElseThrow(() -> new ResourceNotFoundException("Pessoa não encontrada com ID: " + dto.getPessoaId()));
-        Recurso recurso = recursoRepository.findById(dto.getRecursoId())
-                .orElseThrow(() -> new ResourceNotFoundException("Recurso não encontrado com ID: " + dto.getRecursoId()));
+    @Column(name = "DT_REGISTRO", nullable = false) 
+    private LocalDateTime dataRegistro;
 
-        RegistroAjuda registro = new RegistroAjuda();
-        registro.setPessoa(pessoa);
-        registro.setRecurso(recurso);
-        registro.setDataRegistro(LocalDateTime.now());
-        registro.setEntregue(true);
-        registro = registroRepository.save(registro);
-        return toDTO(registro);
-    }
+    @Column(name = "ST_ENTREGUE", nullable = false)
+    private boolean entregue = false; 
 
-    @Transactional
-    public RegistroAjudaDTO marcarComoEntregue(Long id) {
-        RegistroAjuda registro = registroRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Registro de ajuda não encontrado com ID: " + id));
-        registro.setEntregue(true);
-        registro = registroRepository.save(registro);
-        return toDTO(registro);
-    }
-
-    @Transactional
-    public void delete(Long id) {
-        if (!registroRepository.existsById(id)) {
-            throw new ResourceNotFoundException("Registro de ajuda não encontrado com ID: " + id);
-        }
-        registroRepository.deleteById(id);
-    }
-
-    private RegistroAjudaDTO toDTO(RegistroAjuda entity) {
-        return new RegistroAjudaDTO(
-                entity.getId(),
-                entity.getPessoa().getId(),
-                entity.getRecurso().getId(),
-                entity.getDataRegistro(),
-                entity.isEntregue()
-        );
-    }
 }
