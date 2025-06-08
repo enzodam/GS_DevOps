@@ -127,3 +127,13 @@ Conforme confirmado pelos slides oficiais, o Dockerfile personalizado é obrigat
 
 
 
+## 👨‍💻 Desenvolvedores
+
+| Nome                          | RM      | GitHub |
+|-------------------------------|---------|--------|
+| Enzo Dias Alfaia Mendes       | 558438  | [@enzodam](https://github.com/enzodam) |
+| Matheus Henrique Germano Reis | 555861  | [@MatheusReis48](https://github.com/MatheusReis48) |
+| Luan Dantas dos Santos        | 559004  | [@lds2125](https://github.com/lds2125) |
+
+
+
