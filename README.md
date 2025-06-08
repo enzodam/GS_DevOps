@@ -29,7 +29,7 @@ O objetivo principal é demonstrar a capacidade de criar um ambiente de desenvol
     └── src/
 ```
 
-## Destaques da Implementação (Conforme Requisitos)
+## Destaques da Implementação
 
 *   **Container da Aplicação (`Dockerfile.app`):**
     *   Construído via Dockerfile personalizado.
@@ -94,11 +94,9 @@ Conforme confirmado pelos slides oficiais, o Dockerfile personalizado é obrigat
     # No Windows (sem sudo)
     docker compose ps
     ```
-    Você deve ver dois containers (`sos-oracle-db` e `sos-climatech-api`) com status `Up` ou `healthy`.
 
 5.  **Acesse a API (Swagger UI):**
     Abra seu navegador e acesse: `http://localhost:8080/swagger-ui.html`
-    A partir daqui, você pode testar todas as operações CRUD da API.
 
 6.  **Execute os testes CRUD via script (Opcional - via terminal):**
     Se você tiver `curl` e `bash` (ou Git Bash no Windows), pode executar:
@@ -121,7 +119,6 @@ Conforme confirmado pelos slides oficiais, o Dockerfile personalizado é obrigat
     ```bash
     docker compose down
     ```
-    Isso para e remove os containers, mas mantém o volume de dados do Oracle (`oracle_data`). Para remover o volume também (apagando os dados), use `docker compose down -v`.
 
 ## Vídeo Demonstrativo
 
