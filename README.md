@@ -125,5 +125,5 @@ Conforme confirmado pelos slides oficiais, o Dockerfile personalizado é obrigat
 
 ## Vídeo Demonstrativo
 
-Siga as instruções do professor para gravar o vídeo demonstrativo, mostrando a execução dos comandos Docker **via terminal**, a demonstração do CRUD completo pela API (via Swagger ou script) e a persistência dos dados no banco. Lembre-se de explicar cada passo com clareza (voz ou legendas).
+
 
