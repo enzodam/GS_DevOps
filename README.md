@@ -64,8 +64,8 @@ Conforme confirmado pelos slides oficiais, o Dockerfile personalizado é obrigat
 
 1.  **Clone o repositório:**
     ```bash
-    git clone <URL_DO_SEU_REPOSITORIO>
-    cd <NOME_DA_PASTA_DO_REPOSITORIO>
+    git clone <https://github.com/enzodam/GS_DevOps>
+    cd <https://github.com/enzodam/GS_DevOps>
     ```
 
 2.  **Verifique o Docker Desktop (Importante!):**
